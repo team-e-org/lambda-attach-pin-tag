@@ -1,10 +1,15 @@
 package view
 
-import "hello/models"
+import (
+	"hello/models"
+	"time"
+)
 
 type Tag struct {
-	ID  int    `json:"id"`
-	Tag string `json:"tag"`
+	ID        int        `json:"id"`
+	Tag       string     `json:"tag"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 func NewTag(tag *models.Tag) *Tag {

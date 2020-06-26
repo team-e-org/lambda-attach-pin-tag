@@ -5,6 +5,7 @@ import "database/sql"
 type DataStorage interface {
 	CreateTag(tag *Tag) (*Tag, error)
 	GetTagsByTagNames(tagNames []string) ([]*Tag, error)
+	CreatePinTag(pinID int, tagID int) error
 }
 
 func NewSQLDataStorage(sqlDB *sql.DB) DataStorage {

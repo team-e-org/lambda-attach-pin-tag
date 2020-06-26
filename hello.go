@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"hello/config"
 	"hello/db"
 	"hello/models"
@@ -46,7 +45,6 @@ func hello(event Event) (string, error) {
 
 		for _, tag := range tags {
 			if tagName == tag.Tag {
-				fmt.Println("break")
 				existInDB = true
 				break
 			}
@@ -59,13 +57,17 @@ func hello(event Event) (string, error) {
 				UpdatedAt: now,
 			}
 
-			newTag, err = data.CreateTag(newTag)
-			fmt.Println(err)
+			newTag, _ = data.CreateTag(newTag)
 			tags = append(tags, newTag)
 		}
 	}
 
-	// tagとpinを関連づける
+	for _, tag := range tags {
+		err = data.CreatePinTag(event.Pin.ID, tag.ID)
+		if err != nil {
+			return "", err
+		}
+	}
 
 	response := Response{
 		Pin:  event.Pin,
