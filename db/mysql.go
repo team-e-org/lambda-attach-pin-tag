@@ -1,9 +1,9 @@
 package db
 
 import (
+	"app/config"
 	"database/sql"
 	"fmt"
-	"hello/config"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"

@@ -1,7 +1,7 @@
 package view
 
 import (
-	"hello/models"
+	"app/models"
 )
 
 type Pin struct {

@@ -1,12 +1,12 @@
 package main
 
 import (
+	"app/config"
+	"app/db"
+	"app/models"
+	"app/view"
 	"encoding/json"
 	"fmt"
-	"hello/config"
-	"hello/db"
-	"hello/models"
-	"hello/view"
 	"time"
 
 	l "github.com/aws/aws-lambda-go/lambda"
@@ -25,7 +25,7 @@ type Response struct {
 	Tags []*view.Tag `json:"tags"`
 }
 
-func hello(event Event) (string, error) {
+func handler(event Event) (string, error) {
 	c, err := config.ReadConfig()
 	if err != nil {
 		return "", err
@@ -101,5 +101,5 @@ func hello(event Event) (string, error) {
 }
 
 func main() {
-	l.Start(hello)
+	l.Start(handler)
 }
