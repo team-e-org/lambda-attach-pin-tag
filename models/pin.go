@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 type Pin struct {
 	ID          int
 	UserID      *int
@@ -10,6 +8,6 @@ type Pin struct {
 	URL         *string
 	ImageURL    string
 	IsPrivate   bool
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	CreatedAt   string
+	UpdatedAt   string
 }

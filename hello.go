@@ -2,13 +2,17 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"hello/config"
 	"hello/db"
 	"hello/models"
 	"hello/view"
 	"time"
 
-	"github.com/aws/aws-lambda-go/lambda"
+	l "github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/lambda"
 )
 
 type Event struct {
@@ -79,9 +83,23 @@ func hello(event Event) (string, error) {
 		return "", err
 	}
 
+	svc := lambda.New(session.New(), aws.NewConfig().WithRegion("ap-northeast-1"))
+
+	input := &lambda.InvokeInput{
+		FunctionName:   aws.String("arn:aws:lambda:ap-northeast-1:444207867088:function:insertDynamo"),
+		Payload:        bytes,
+		InvocationType: aws.String("Event"),
+	}
+
+	resp, err := svc.Invoke(input)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(resp)
+
 	return string(bytes), nil
 }
 
 func main() {
-	lambda.Start(hello)
+	l.Start(hello)
 }
