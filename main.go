@@ -3,10 +3,10 @@ package main
 import (
 	"app/config"
 	"app/db"
+	"app/logs"
 	"app/models"
 	"app/view"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	l "github.com/aws/aws-lambda-go/lambda"
@@ -28,11 +28,13 @@ type Response struct {
 func handler(event Event) (string, error) {
 	c, err := config.ReadConfig()
 	if err != nil {
+		logs.Error("read db config: %v", err)
 		return "", err
 	}
 
 	db, err := db.ConnectToMySql(&c.DB)
 	if err != nil {
+		logs.Error("connecting to mysql: %v", err)
 		return "", err
 	}
 
@@ -40,6 +42,7 @@ func handler(event Event) (string, error) {
 
 	tags, err := data.GetTagsByTagNames(event.Tags)
 	if err != nil {
+		logs.Error("getting tags by tag names: %v", err)
 		return "", err
 	}
 
@@ -69,6 +72,7 @@ func handler(event Event) (string, error) {
 	for _, tag := range tags {
 		err = data.CreatePinTag(event.Pin.ID, tag.ID)
 		if err != nil {
+			logs.Error("creating pin_tags: %v", err)
 			return "", err
 		}
 	}
@@ -80,6 +84,7 @@ func handler(event Event) (string, error) {
 
 	bytes, err := json.Marshal(response)
 	if err != nil {
+		logs.Error("serializing json: %v", err)
 		return "", err
 	}
 
@@ -93,9 +98,10 @@ func handler(event Event) (string, error) {
 
 	resp, err := svc.Invoke(input)
 	if err != nil {
+		logs.Error("calling next lambda: %v", err)
 		return "", err
 	}
-	fmt.Println(resp)
+	logs.Info("response from next lambda: %v", resp)
 
 	return string(bytes), nil
 }
