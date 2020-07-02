@@ -27,6 +27,8 @@ type Response struct {
 }
 
 func handler(event Event) (string, error) {
+	logs.Info("Lambda started, event: %v", event)
+
 	c, err := config.ReadConfig()
 	if err != nil {
 		logs.Error("read db config: %v", err)
@@ -99,6 +101,7 @@ func handler(event Event) (string, error) {
 	}
 
 	resp, err := svc.Invoke(input)
+
 	if err != nil {
 		logs.Error("calling next lambda: %v", err)
 		return "", err
