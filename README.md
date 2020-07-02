@@ -56,3 +56,5 @@ output
 execute `./scripts/zip.sh`
 
 upload handler.zip to lambda
+
+`aws lambda update-function-code --function-name attachTag --zip-file fileb://handler.zip`
