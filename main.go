@@ -7,6 +7,7 @@ import (
 	"app/models"
 	"app/view"
 	"encoding/json"
+	"regexp"
 	"time"
 
 	l "github.com/aws/aws-lambda-go/lambda"
@@ -77,6 +78,7 @@ func handler(event Event) (string, error) {
 		}
 	}
 
+	event.Pin.ImageURL = removeURLDomain(event.Pin.ImageURL)
 	response := Response{
 		Pin:  event.Pin,
 		Tags: view.NewTags(tags),
@@ -108,4 +110,9 @@ func handler(event Event) (string, error) {
 
 func main() {
 	l.Start(handler)
+}
+
+func removeURLDomain(url string) string {
+	reg := regexp.MustCompile(`pins(.+)`)
+	return reg.FindString(url)
 }

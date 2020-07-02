@@ -6,7 +6,7 @@ input
     "userId": 1,
     "title": "pin1",
     "description": "pin1 description",
-    "imageUrl": "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/009174cf-c4fe-4a49-a4b2-cb24a98887c9.png",
+    "imageUrl": "https://d1khmj8lxb1rtx.cloudfront.net/pins/1/4184f0b9-a5c4-4343-b6d7-14c75d1775ae.jpg",
     "isPrivate": false,
     "createdAt": "2020-06-27 10:37:59",
     "updatedAt": "2020-06-27 10:37:59"
@@ -29,7 +29,7 @@ output
     "userId": 1,
     "title": "pin1",
     "description": "pin1 description",
-    "imageUrl": "https://pinko-bucket.s3-ap-northeast-1.amazonaws.com/pins/009174cf-c4fe-4a49-a4b2-cb24a98887c9.png",
+    "imageUrl": "pins/1/4184f0b9-a5c4-4343-b6d7-14c75d1775ae.jpg",
     "isPrivate": false,
     "createdAt": "2020-06-27 10:37:59",
     "updatedAt": "2020-06-27 10:37:59"
