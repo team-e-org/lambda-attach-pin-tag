@@ -6,14 +6,14 @@ import (
 	"app/logs"
 	"app/models"
 	"app/view"
+	"bytes"
 	"encoding/json"
+	"net/http"
+	"os"
 	"regexp"
 	"time"
 
 	l "github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/lambda"
 )
 
 type Event struct {
@@ -86,29 +86,51 @@ func handler(event Event) (string, error) {
 		Tags: view.NewTags(tags),
 	}
 
-	bytes, err := json.Marshal(response)
+	b, err := json.Marshal(response)
 	if err != nil {
 		logs.Error("serializing json: %v", err)
 		return "", err
 	}
 
-	svc := lambda.New(session.New(), aws.NewConfig().WithRegion("ap-northeast-1"))
+	url := os.Getenv("URL")
 
-	input := &lambda.InvokeInput{
-		FunctionName:   aws.String("arn:aws:lambda:ap-northeast-1:444207867088:function:insertDynamo"),
-		Payload:        bytes,
-		InvocationType: aws.String("Event"),
-	}
-
-	resp, err := svc.Invoke(input)
-
+	req, err := http.NewRequest(
+		"POST",
+		url,
+		bytes.NewReader(b),
+	)
 	if err != nil {
-		logs.Error("calling next lambda: %v", err)
-		return "", err
+		logs.Error("Can not create request: %v", err)
 	}
-	logs.Info("response from next lambda: %v", resp)
 
-	return string(bytes), nil
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		logs.Error("Can not do request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	logs.Info("response: %v", resp)
+
+	// svc := lambda.New(session.New(), aws.NewConfig().WithRegion("ap-northeast-1"))
+
+	// input := &lambda.InvokeInput{
+	// 	FunctionName:   aws.String("arn:aws:lambda:ap-northeast-1:444207867088:function:insertDynamo"),
+	// 	Payload:        bytes,
+	// 	InvocationType: aws.String("Event"),
+	// }
+
+	// resp, err := svc.Invoke(input)
+
+	// if err != nil {
+	// 	logs.Error("calling next lambda: %v", err)
+	// 	return "", err
+	// }
+	// logs.Info("response from next lambda: %v", resp)
+
+	return string(b), nil
 }
 
 func main() {
